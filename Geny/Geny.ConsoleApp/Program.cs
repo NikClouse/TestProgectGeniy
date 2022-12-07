@@ -6,6 +6,7 @@ namespace GenyConsoleApp
     {
         static void Main(string[] args)
         {
+            //Coment
             while (true)
             {
                 Console.WriteLine("Здраствуйте! как вас зовут?");
