@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text;
+using System.IO;
 
 namespace GenyConsoleApp
 {
@@ -6,7 +8,7 @@ namespace GenyConsoleApp
     {
         static void Main(string[] args)
         {
-            //Coment
+             
             while (true)
             {
                 Console.WriteLine("Здраствуйте! как вас зовут?");
@@ -38,8 +40,7 @@ namespace GenyConsoleApp
                 {
                     Console.WriteLine("Вопрос №" + (i + 1));
                     Console.WriteLine(questions[i]);
-
-                    int userAnswer = Convert.ToInt32(Console.ReadLine());
+                    int userAnswer = GetUserAnswer();
 
                     int rightAnswer = answers[i];
 
@@ -51,16 +52,91 @@ namespace GenyConsoleApp
 
                 Console.WriteLine("Количество правилных ответов: " + countRightAnswers);
 
-                string[] diagnoses = GetDiagnoses();
+                string diagnose = CalculateDiagnose(countQuestions,countRightAnswers);
+               
+                Console.WriteLine(userName + ", Ваш диагноз: " + diagnose);
 
-                Console.WriteLine(userName + ", Ваш диагноз: " + diagnoses[countRightAnswers]);
+                SaveUserResult(userName, countRightAnswers, diagnose);
 
-                bool userShoice = GetUserShoice("Хотите начать сначала?");
+                bool userShoice = GetUserShoice("Хотите посмотрет предыдущие результаты игры?");
+                if(userShoice)
+                {
+                    ShowUserResult();
+                }
+
+                 userShoice = GetUserShoice("Хотите начать сначала?");
                 if(userShoice==false)
                 {
                     break;
                 }
             }
+        }
+
+        private static void ShowUserResult()
+        {
+            StreamReader reader = new StreamReader("userResult.txt",  Encoding.UTF8);
+            Console.WriteLine("{0,-20}{1,25}{2,10}","Имя","Кол-во правилных ответов","Диагноз");
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                string[] values = line.Split('#');
+                string name=values[0];
+                int countRightAnswers=Convert.ToInt32(values[1]);
+                string diagnose=values[2];
+
+                Console.WriteLine("{0,-20}{1,25}{2,10}", name, countRightAnswers, diagnose);
+            }
+            
+            reader.Close();
+        }
+
+            public  static void SaveUserResult(string userName, int countRightAnswers, string diagnose)
+        {
+            string value = $"{userName}#{countRightAnswers}#{diagnose}";
+            AppendToFile("userResult.txt", value);
+        }
+            public static void AppendToFile(string fileName, string value)
+        {
+            StreamWriter writer = new StreamWriter(fileName,true,Encoding.UTF8);
+            writer.WriteLine(value);
+            writer.Close();
+        }
+            public static string CalculateDiagnose(int countQuestions, int countRightAnswers)
+        {
+            string[] diagnoses = GetDiagnoses();
+
+            int percentRightAnswers = countRightAnswers * 100 / countQuestions;
+            return diagnoses[percentRightAnswers/20];
+           
+        }
+            public static int GetUserAnswer()
+        {
+            //Можно так сделат!
+            //int userAnswer;
+            //while (int.TryParse(Console.ReadLine(), out userAnswer) == false)
+            //{
+            //    Console.WriteLine("Введите число!");
+            //}
+
+            //return userAnswer;
+
+            //Или можно так сделат
+             while (true)
+                 {
+                 try
+                 {
+                   return Convert.ToInt32(Console.ReadLine());
+                 }
+                   catch (FormatException e)
+                 {
+                   Console.WriteLine("Введите число!");
+                 }
+                 catch (OverflowException)
+                 {
+                   Console.WriteLine("Число слишком длини!");
+                 }
+            }
+
         }
             public static bool GetUserShoice(string message)
         {
