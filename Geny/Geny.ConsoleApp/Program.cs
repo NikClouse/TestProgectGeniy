@@ -65,7 +65,7 @@ namespace GenyConsoleApp
             }
         }
 
-        private static void ShowUserResult()
+            private static void ShowUserResult()
         {
             StreamReader reader = new StreamReader("userResult.txt",  Encoding.UTF8);
             Console.WriteLine("{0,-20}{1,25}{2,10}","Имя","Кол-во правилных ответов","Диагноз");
@@ -82,7 +82,6 @@ namespace GenyConsoleApp
             
             reader.Close();
         }
-
             public  static void SaveUserResult(string userName, int countRightAnswers, string diagnose)
         {
             string value = $"{userName}#{countRightAnswers}#{diagnose}";
