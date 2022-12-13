@@ -13,41 +13,32 @@ namespace GenyConsoleApp
             {
                 Console.WriteLine("Здраствуйте! как вас зовут?");
                 string userName = Console.ReadLine();
-                int countQuestions = 5;
+                Console.WriteLine();
 
-                string[] questions = GetQuestions(countQuestions);
-                int[] answers = GetAnswers(countQuestions);
-
+                List<string> questions = GetQuestions();
+                List<int> answers = GetAnswers();
+                int countQuestions = questions.Count;
                 int countRightAnswers = 0;
 
                 Random random = new Random();
 
-                for (int i = 0; i < 1000; i++)
-                {
-                    int index1 = random.Next(0, countQuestions);
-                    int index2 = random.Next(0, countQuestions);
-
-                    string tempQuestion = questions[index1];
-                    questions[index1] = questions[index2];
-                    questions[index2] = tempQuestion;
-
-                    int tempAnswer = answers[index1];
-                    answers[index1] = answers[index2];
-                    answers[index2] = tempAnswer;
-                }
+               
 
                 for (int i = 0; i < countQuestions; i++)
                 {
                     Console.WriteLine("Вопрос №" + (i + 1));
-                    Console.WriteLine(questions[i]);
+                    var rundomQuestionIndex=random.Next(0,questions.Count);
+                    Console.WriteLine(questions[rundomQuestionIndex]);
                     int userAnswer = GetUserAnswer();
 
-                    int rightAnswer = answers[i];
+                    int rightAnswer = answers[rundomQuestionIndex];
 
                     if (userAnswer == rightAnswer)
                     {
                         countRightAnswers++;
                     }
+                    questions.RemoveAt(rundomQuestionIndex);
+                    answers.RemoveAt(rundomQuestionIndex);
                 }
 
                 Console.WriteLine("Количество правилных ответов: " + countRightAnswers);
@@ -58,12 +49,14 @@ namespace GenyConsoleApp
 
                 SaveUserResult(userName, countRightAnswers, diagnose);
 
+                Console.WriteLine();
                 bool userShoice = GetUserShoice("Хотите посмотрет предыдущие результаты игры?");
+                Console.WriteLine();
                 if(userShoice)
                 {
                     ShowUserResult();
                 }
-
+                Console.WriteLine();
                  userShoice = GetUserShoice("Хотите начать сначала?");
                 if(userShoice==false)
                 {
@@ -155,25 +148,25 @@ namespace GenyConsoleApp
                 }
             }
         }
-            public static string[] GetQuestions(int countQuestions)
+            public static List<string> GetQuestions()
 
             {
-                string[] questions = new string[countQuestions];
-                questions[0] = "Сколько будет два плюс два умноженное на два?";
-                questions[1] = "Бревно нужно распилить на 10 частей,сколько надо сделать распилов?";
-                questions[2] = "На двух руках 10 пальцев.Сколько пальцев на  5 руках?";
-                questions[3] = "Укол делают каждые полчаса,сколько нужно минут для трех уколов? ";
-                questions[4] = "Пять свечей горело,две потухли.Сколько свечей осталось?";
+            List<string> questions = new List<string>();
+                questions.Add("Сколько будет два плюс два умноженное на два?");
+                questions.Add("Бревно нужно распилить на 10 частей,сколько надо сделать распилов?");
+                questions.Add("На двух руках 10 пальцев.Сколько пальцев на  5 руках?");
+                questions.Add("Укол делают каждые полчаса,сколько нужно минут для трех уколов? ");
+                questions.Add("Пять свечей горело,две потухли.Сколько свечей осталось?");
                 return questions;
             }
-            public static int[] GetAnswers(int countQuestions)
+            public static List<int> GetAnswers()
             {
-                int[] answers = new int[countQuestions];
-                answers[0] = 6;
-                answers[1] = 9;
-                answers[2] = 25;
-                answers[3] = 60;
-                answers[4] = 2;
+                List<int> answers = new List<int>();
+                answers.Add(6);
+                answers.Add(9);
+                answers.Add(25);
+                answers.Add(60);
+                answers.Add(2);
                 return answers;
             }
             public static string[] GetDiagnoses()
